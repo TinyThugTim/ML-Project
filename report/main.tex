@@ -1,0 +1,91 @@
+\documentclass{article}
+
+%% https://uwaterloo.ca/science/undergraduate/experiential-learning/
+%% co-op/science-work-term-reports/work-term-report-guidelines
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%--------------------------PREAMBLE------------------------------%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0cm]{geometry}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{pdfpages}
+\usepackage{anyfontsize}
+\usepackage{setspace}
+\setcounter{section}{-1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%-----------------------CUSTOM COMMANDS--------------------------%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\textBF}[1]{%
+    \pdfliteral direct {2 Tr 1 w} %the second factor is the boldness
+     #1%
+    \pdfliteral direct {0 Tr 0 w}%
+}
+
+\newcommand{\textDF}[1]{%
+    \pdfliteral direct {2 Tr 0.2 w} %the second factor is the boldness
+     #1%
+    \pdfliteral direct {0 Tr 0 w}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%-----------------------DOCUMENT BEGIN---------------------------%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{titlepage}
+    \thispagestyle{empty}
+    \title{
+        \vspace{2cm}
+        \includegraphics[width=7cm]{images/uw_logo.png} \\
+        \vspace{4cm}
+        \begingroup
+            \setstretch{4}\fontsize{26}{10}\selectfont\fontdimen2\font=0.7ex
+            \parbox{13.5cm}{\textBF{Machine Learning Principles 
+            Applied to Quantum Error Correction}} % Title
+        \endgroup
+    }
+    \date{}     % Set to empty
+    \author{}   % Set to empty
+    \maketitle
+    \vspace{-3.5cm}
+    \hspace{4cm}\parbox[b][15cm][b]{16cm}{
+        \textDF{
+            \large\setstretch{1.5}
+            PHYS 490 -- Topics in ML\\
+            \date{\today}\\
+            Yusufzai, Fahim (20677986) \\
+            Elkhalifa, Mujtaba (...) \\
+            Bayat, Nouralhoda (...) \\
+        }
+    }
+\end{titlepage}
+\pagebreak
+
+\newgeometry{top=1.5in,bottom=1in,right=1in,left=1.5in} 
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\listoffigures
+\listoftables
+\pagebreak
+
+\include{sections/midterm}
+
+\pagenumbering{arabic}
+\include{sections/summary}
+\include{sections/introduction}
+\include{sections/materials_methods}
+\include{sections/result_analysis}
+\include{sections/discussion}
+\include{sections/conclusion}
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

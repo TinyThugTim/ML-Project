@@ -4,5 +4,5 @@
 
 - [x] Be Awesome! 😎
 - [ ] Read Selection of Papers
-- [ ] Choose Project Topic
+- [x] Choose Project Topic
 

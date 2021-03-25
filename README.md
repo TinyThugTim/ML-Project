@@ -1,6 +1,6 @@
 # PHYS 490-Machine Learning for Physical Science Winter 2021
 
-#Team
+# Team
 Fahim Yusufzai
 Noura Bayat, 
 Mujtaba Elkhalifa,

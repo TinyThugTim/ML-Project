@@ -10,10 +10,9 @@ Shivani Hegde,
 ## To-Do List:
 
 - [x] Be Awesome! 😎
-- [ ] Mujtaba Read problem statement and add to overleaf
-- [ ] Fahim Read on roadMap section and add to overleaf
-- [ ] Shivani Read on NN section and add to overleaf
-- [ ] Noura Chill
-- [ ] Add to the overleaf presentation document by Monday Night
-- [x] Choose Project Topic
+- [ ] Understanding the input and output dataset
+- [ ] What kind of model we will be training on
+- [ ] the loss function we would be using
+- [ ] will graph models be useful since the system is 2-d lattice 
+- [ ] 
 

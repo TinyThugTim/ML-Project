@@ -1,5 +1,6 @@
 from torch import nn
 import torch
+
 class RNN(nn.Module):
     """
     def __init__(self, n_dim, seq_len, n_hidden, n_layers=1):

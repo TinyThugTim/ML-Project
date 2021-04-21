@@ -6,15 +6,15 @@ class Data():
 
     def __init__(self, data):
 
-        lg = data[:, 8:-1]
+        lg = data[:, -5:-1]
         for i in range(0, len(lg[:, 0])):
                 if lg[i, 0]== max(lg[i, :]): lg[i, :] = [1,0,0,0]
                 if lg[i, 1]== max(lg[i, :]): lg[i, :] = [0,1,0,0]
                 if lg[i, 2]== max(lg[i, :]): lg[i, :] = [0,0,1,0]
-                if lg[i, 3]== max(lg[i, :]): lg[i, :] = [0,0,0,3]
+                if lg[i, 3]== max(lg[i, :]): lg[i, :] = [0,0,0,1]
                 #print(lg[i, :], 'index ',i)
 
-        err_synd_train = data[:, :8]
+        err_synd_train = data[:, :-5]
         logical_err_train = np.array(lg)
         err_synd_train = np.array(err_synd_train, dtype=np.float32)
         logical_err_train = np.array(logical_err_train, dtype=np.float32)
@@ -27,7 +27,7 @@ class Data():
 
 if __name__ == '__main__':
 
-    data = np.loadtxt('../Datasets/d=3.txt')
+    data = np.loadtxt('../Datasets/d=5.txt')
     for_training = Data(data)
     x, y = for_training.err_synd_train, for_training.logical_err_train
 

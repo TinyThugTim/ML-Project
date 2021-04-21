@@ -14,7 +14,7 @@ class Data():
                 if lg[i, 3]== max(lg[i, :]): lg[i, :] = [0,0,0,3]
                 #print(lg[i, :], 'index ',i)
 
-        err_synd_train = data[:, :8] # all 256 data because we need to train for all possible combo
+        err_synd_train = data[:, :8]
         logical_err_train = np.array(lg)
         err_synd_train = np.array(err_synd_train, dtype=np.float32)
         logical_err_train = np.array(logical_err_train, dtype=np.float32)

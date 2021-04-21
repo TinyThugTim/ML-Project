@@ -1,52 +1,38 @@
-import csv
 import torch
 import numpy as np
-from sklearn.model_selection import train_test_split
+
 
 class Data():
 
-    def __init__(self, path_to_data: str, test_size: int, verbose=True):
-        '''Data generation
-        x_* attributes contain n_bits of grayscale pixels representing some digit
-        y_* attributes are the corresponding digits to x_*
-        '''
+    def __init__(self, data):
 
-        with open(path_to_data,'r') as d:
-            data_iter = csv.reader(d, delimiter =' ')
+        lg = data[:, 8:-1]
+        for i in range(0, len(lg[:, 0])):
+                if lg[i, 0]== max(lg[i, :]): lg[i, :] = [1,0,0,0]
+                if lg[i, 1]== max(lg[i, :]): lg[i, :] = [0,1,0,0]
+                if lg[i, 2]== max(lg[i, :]): lg[i, :] = [0,0,1,0]
+                if lg[i, 3]== max(lg[i, :]): lg[i, :] = [0,0,0,3]
+                #print(lg[i, :], 'index ',i)
 
-            data = []
-            for e in data_iter:
-            	e.pop(8)
-            	data.append(list(map(int, e)))
+        err_synd_train = data[:, :8] # all 256 data because we need to train for all possible combo
+        logical_err_train = np.array(lg)
+        err_synd_train = np.array(err_synd_train, dtype=np.float32)
+        logical_err_train = np.array(logical_err_train, dtype=np.float32)
+        #print(logical_err_train, '\n')
+        #print(err_synd_train.shape, err_synd_train.dtype, logical_err_train.shape, logical_err_train.dtype)
 
-            data_array = np.array(data, dtype=np.int)
+        self.err_synd_train = err_synd_train
+        self.logical_err_train = logical_err_train
 
-
-        # Split data into i/o and normalize
-        x_ = data_array[:, :8]
-        y_ = data_array[:, 8:]
-
-        x_train, x_test, y_train, y_test = train_test_split(
-            x_, y_, test_size=test_size, shuffle=True)
-
-
-        if verbose:            
-            print('x_train.shape:', x_train.shape)   # (200, 8)
-            print('y_train.shape:', y_train.shape)   # (200, 5)
-            print('x_test.shape:', x_test.shape)     # (56, 8)
-            print('y_test.shape:', y_test.shape)     # (56, 5)
-
-            #print(x_train)
-            #print(y_train)
-            print(x_test)
-            print(y_test)
-
-        self.x_train = torch.tensor(x_train, dtype=torch.float)
-        self.x_test  = torch.tensor(x_test, dtype=torch.float)
-        self.y_train = torch.tensor(y_train, dtype=torch.long)
-        self.y_test  = torch.tensor(y_test, dtype=torch.long)
 
 if __name__ == '__main__':
 
-    print('Hello, world!')
-    Data('../Datasets/d=3.txt', 56)
+    data = np.loadtxt('../Datasets/d=3.txt')
+    for_training = Data(data)
+    x, y = for_training.err_synd_train, for_training.logical_err_train
+
+    print('\nsyndrome measurements for training: \n', x)
+    print('\n',x.shape, x.dtype)
+
+    print('\nlogical gates in array of 0s and 1s: \n', y)
+    print('\n',y.shape, y.dtype,'\n')

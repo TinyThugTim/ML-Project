@@ -85,7 +85,7 @@ def get_syndrome(code,noise_model,shots=1014):
     raw_results = {}
     for log in ['0','1']:
         raw_results[log] = job.result().get_counts(log)
-    
+
     return code.process_results( raw_results )
 
 
@@ -102,12 +102,12 @@ def get_results(code,noise_model,shots=1014):
     circuits = code.get_circuit_list()
 
     job = execute( circuits, Aer.get_backend('qasm_simulator'),noise_model=noise_model, shots=shots )
-    raw_results = {}        
+    raw_results = {}
     for log in ['0','1']:
         raw_results[log] = job.result().get_counts(log)
-    
+
     processed_results = code.process_results(raw_results)
-    
+
     return processed_results
 
 
@@ -118,14 +118,14 @@ def get_syndrome_new(processed_results):
 
     final_results = [[],[],[],[],[]]
     for log in ['0','1']:
-        for row in processed_results[log]:    
+        for row in processed_results[log]:
             #print (row)
-            segments = row.split()            
+            segments = row.split()
             #print (segments)
             for i in range(len(segments)):
                 final_results[i].append(segments[i])
-    
-    return final_results    
+
+    return final_results
 
 
 # In[162]:
@@ -146,7 +146,7 @@ print("Col1", results[0][50])
 print("Col2", results[1][50])
 print("Col3", results[2][50])
 print("Col4", results[3][50])
-print("Col5", results[4][50])
+#print("Col5", results[4][50]) # give out of range error
 #for item in results[1]:
 #    print(item)
     #10011100
@@ -167,7 +167,6 @@ logical_prob_match = dec.get_logical_prob(results)
 
 for log in ['0','1']:
     print('d =',d,',log =',log)
-    print('logical error probability for matching =',logical_prob_match[log])
-    print('')
-print('')
+    print('logical error probability for matching =',logical_prob_match[log], '\n')
 
+print('\n')

@@ -15,11 +15,12 @@ seq_len = 1
 
 train_in = torch.from_numpy(error_synd_train.reshape(-1, seq_len, 8).astype(np.float32))
 train_out = torch.from_numpy(logical_err_train.reshape(-1, seq_len, 4).astype(np.float32))
+train_out = torch.reshape(train_out, (256, 4))
 print('\n',train_in.shape, train_out.shape,'\n')
 # so far only training but will get to testing once noise model syndrome measurements are obtained
 
-input_dim, hidden_dim, layer_dim, output_dim = 8, 128, 2, 4
-learning_rate = 2e-3
+input_dim, hidden_dim, layer_dim, output_dim = 8, 128, 4, 4
+learning_rate = 2e-2
 net = RNN(input_dim, hidden_dim, layer_dim, output_dim)
 criterion = nn.MSELoss(reduction = 'mean')
 optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
@@ -36,7 +37,7 @@ for e in range(1000):
         print(loss)
 """
 
-num_epochs = 5000
+num_epochs = 500
 iter = 0
 for epoch in range(num_epochs):
     # Clear gradients w.r.t. parameters
@@ -56,5 +57,5 @@ for epoch in range(num_epochs):
 
     iter += 1
 
-    if (epoch + 1)% 500 == 0:
+    if (epoch + 1)% 100 == 0:
         print(loss.item())

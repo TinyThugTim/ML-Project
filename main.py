@@ -10,8 +10,7 @@ from data_gen import Data
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='ML Project Arguments')
     """
-    parser.add_argument('-v', type=int, default=1, metavar='N',
-                        help='verbosity (default: 1)')
+
     parser.add_argument('--res-path', metavar='results',
                         help='path of results')
     """
@@ -19,6 +18,8 @@ if __name__ == "__main__":
                         help='training dataset file path')
     parser.add_argument('--param', default='param/param.json',
                         help='parameter file name')
+    parser.add_argument('-v', type=int, default=1, metavar='N',
+                        help='verbosity (default: 1)')
     args = parser.parse_args()
 
     data = np.loadtxt('%s' %args.data)
@@ -44,7 +45,7 @@ if __name__ == "__main__":
         seq_len = param['seq_len_d=5']
         num_epochs = param['num_epochs_d=5']
 
-    
+
     train_in = torch.from_numpy(error_synd_train.reshape(-1, seq_len, train_in_row).astype(np.float32))
     train_out = torch.from_numpy(logical_err_train.reshape(-1, seq_len, train_out_row).astype(np.float32))
     train_out = torch.reshape(train_out, (train_out_col, train_out_row))
@@ -68,6 +69,7 @@ if __name__ == "__main__":
     """
 
     iter = 0
+    loss_vals = []
     for epoch in range(num_epochs):
         # Clear gradients w.r.t. parameters
         optimizer.zero_grad()
@@ -84,7 +86,12 @@ if __name__ == "__main__":
         # Updating parameters
         optimizer.step()
 
+        loss_vals.append(loss.item())
         iter += 1
 
-        if (epoch + 1)% int(0.1*num_epochs) == 0:
-            print(loss.item())
+        if args.v >=2:
+            if (epoch + 1)% int(0.1*num_epochs) == 0:
+                print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
+                          '\tTraining Loss: {:.4f}'.format(loss.item()))
+    if args.v:
+        print('Final training loss: {:.4f}'.format(loss_vals[-1]))

@@ -22,10 +22,10 @@ if __name__ == "__main__":
                         help='verbosity (default: 1)')
     args = parser.parse_args()
 
-    data = np.loadtxt('%s' %args.data)
-    for_training = Data(data)
+    data_train = np.loadtxt('%s' %args.data)
+    data = Data(data_train)
 
-    error_synd_train, logical_err_train = for_training.err_synd_train, for_training.logical_err_train
+    error_synd_train, logical_err_train = data.err_synd_train, data.logical_err_train
     train_in_row = len(error_synd_train[0, :])
     train_in_col = len(error_synd_train[:, 0])
     train_out_row = len(logical_err_train[0, :])
@@ -87,11 +87,16 @@ if __name__ == "__main__":
         optimizer.step()
 
         loss_vals.append(loss.item())
+
+        test_val= net.test(data, loss, epoch)
+        cross_vals.append(test_val)
         iter += 1
 
         if args.v >=2:
             if (epoch + 1)% int(0.1*num_epochs) == 0:
                 print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
-                          '\tTraining Loss: {:.4f}'.format(loss.item()))
+                          '\tTraining Loss: {:.4f}'.format(loss.item())+\
+                      '\tTest Loss: {:.4f}'.format(test_val))
     if args.v:
         print('Final training loss: {:.4f}'.format(loss_vals[-1]))
+        print('Final test loss: {:.4f}'.format(cross_vals[-1]))

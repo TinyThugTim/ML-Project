@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding: utf-8
 
 # # Simulation and Noise Models
@@ -6,14 +6,11 @@
 # In[1]:
 
 
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
-
-
 # In[2]:
 
 
 import sys
+import numpy as np
 sys.path.insert(0, '../')
 
 
@@ -109,7 +106,7 @@ def get_results():
         results = (execute(qubit,Aer.get_backend("qasm_simulator"),noise_model=get_noise_model(noise_value),
                        shots=100,).result().get_counts())
     print(results)
-    
+
     return results
 x = get_results()
 
@@ -120,18 +117,18 @@ x = get_results()
 def get_syndrome_new(synd):
 
     final_results = [[],[],[],[]]
-    
-    for row in synd:    
+
+    for row in synd:
         #print (row)
-        segments = row.split()            
+        segments = row.split()
         #print (segments)
         for i in range(len(segments)):
             final_results[i].append(segments[i])
-    
+
     for item in synd.values():
         final_results[3].append(item)
-        
-    return final_results  
+
+    return final_results
 print(np.array(get_syndrome_new(x)[3]))
 
 

@@ -44,7 +44,7 @@ from benchmarking.benchmarking_tools import SurfaceCodeBenchmarkingTool
 from qiskit.providers.aer.noise import NoiseModel
 from qiskit.providers.aer.noise.errors import pauli_error, depolarizing_error
 from surface_code.fitters import GraphDecoder
-from surface_code.circuits import SurfaceCodeLogicalQubit
+from surface_code.circuits import SurfaceCodeLogicalQubit, RotatedSurfaceCodeLattice
 from qiskit import QuantumCircuit, execute, QuantumRegister, ClassicalRegister, Aer
 from tqdm import tqdm
 
@@ -109,7 +109,9 @@ def get_results():
 
     return results
 x = get_results()
-
+#print(x)
+for readout, count in x.items():
+    print(qubit.parse_readout(readout))
 
 # In[65]:
 
@@ -129,7 +131,7 @@ def get_syndrome_new(synd):
         final_results[3].append(item)
 
     return final_results
-print(np.array(get_syndrome_new(x)[3]))
+print(np.array(get_syndrome_new(x)))
 
 
 # In[7]:

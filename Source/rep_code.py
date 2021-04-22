@@ -153,7 +153,7 @@ print(results.shape)
 print(results[0, :])
 
 
-with open('../Datasets/simple_decoder_testset.txt', "w") as outfile:
+with open('../Datasets/d=3_test.txt', "w") as outfile:
     np.savetxt(outfile, results, fmt='%s')
 
 

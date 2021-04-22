@@ -14,22 +14,30 @@ if __name__ == "__main__":
     parser.add_argument('--res-path', metavar='results',
                         help='path of results')
     """
-    parser.add_argument('--data', default='Datasets/d=3.txt',
+    parser.add_argument('--data_train', default='Datasets/d=3_train.txt',
                         help='training dataset file path')
+    parser.add_argument('--data_test', default='Datasets/d=3_test.txt',
+                        help='testing dataset file path')
     parser.add_argument('--param', default='param/param.json',
                         help='parameter file name')
     parser.add_argument('-v', type=int, default=1, metavar='N',
                         help='verbosity (default: 1)')
     args = parser.parse_args()
 
-    data_train = np.loadtxt('%s' %args.data)
-    data = Data(data_train)
+    data_train = np.loadtxt('%s' %args.data_train)
+    data_test = np.loadtxt('%s' %args.data_test)
+    data = Data(data_train, data_test)
 
-    error_synd_train, logical_err_train = data.err_synd_train, data.logical_err_train
+    error_synd_train, logical_err_train, error_synd_test, logical_err_test = data.err_synd_train, data.logical_err_train, data.err_synd_test, data.logical_err_test,
     train_in_row = len(error_synd_train[0, :])
     train_in_col = len(error_synd_train[:, 0])
     train_out_row = len(logical_err_train[0, :])
     train_out_col = len(logical_err_train[:, 0])
+
+    test_in_row = len(error_synd_test[0, :])
+    test_in_col = len(error_synd_test[:, 0])
+    test_out_row = len(logical_err_test[0, :])
+    test_out_col = len(logical_err_test[:, 0])
 
     with open(args.param) as paramfile:
         param = json.load(paramfile)
@@ -51,6 +59,11 @@ if __name__ == "__main__":
     train_out = torch.reshape(train_out, (train_out_col, train_out_row))
     print('\n',train_in.shape, train_out.shape,'\n')
 
+    test_in = torch.from_numpy(error_synd_test.reshape(-1, seq_len, test_in_row).astype(np.float32))
+    test_out = torch.from_numpy(logical_err_test.reshape(-1, seq_len, test_out_row).astype(np.float32))
+    test_out = torch.reshape(test_out, (test_out_col, test_out_row))
+    print('\n',test_in.shape, test_out.shape,'\n')
+
     input_dim, hidden_dim, layer_dim, output_dim = train_in_row, train_in_col, layer_dim, train_out_row
     net = RNN(input_dim, hidden_dim, layer_dim, output_dim)
     criterion = nn.MSELoss(reduction = 'mean')
@@ -68,9 +81,13 @@ if __name__ == "__main__":
             print(loss)
     """
 
-    iter = 0
+
     loss_vals = []
+    obj_vals = []
+    train_acc_vals = []
+    test_acc_vals = []
     for epoch in range(num_epochs):
+
         # Clear gradients w.r.t. parameters
         optimizer.zero_grad()
 
@@ -86,17 +103,27 @@ if __name__ == "__main__":
         # Updating parameters
         optimizer.step()
 
-        loss_vals.append(loss.item())
+        obj_vals.append(loss.item())
 
-        test_val= net.test(data, loss, epoch)
+        test_val= RNN.test(test_in, test_out, loss)
         cross_vals.append(test_val)
-        iter += 1
+
+        train_acc = get_accuracy(train_in, train_out)
+        test_acc = get_accuracy(test_in, test_out)
+
+        train_acc_vals.append(train_acc)
+        test_acc_vals.append(test_acc)
 
         if args.v >=2:
             if (epoch + 1)% int(0.1*num_epochs) == 0:
                 print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
-                          '\tTraining Loss: {:.4f}'.format(loss.item())+\
-                      '\tTest Loss: {:.4f}'.format(test_val))
+                        '\tTraining Loss: {:.4f}'.format(loss.item()+\
+                        '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100)+\
+                        '\tTest Accuracy: {:.2f}%'.format(test_acc * 100)))
+
+
     if args.v:
-        print('Final training loss: {:.4f}'.format(loss_vals[-1]))
+        print('Final training loss: {:.4f}'.format(object_vals[-1]))
         print('Final test loss: {:.4f}'.format(cross_vals[-1]))
+        print('Final train accuracy: {:.2f}%'.format(train_acc_vals[-1] * 100))
+        print('Final test accuracy: {:.2f}%'.format(test_acc_vals[-1] * 100))

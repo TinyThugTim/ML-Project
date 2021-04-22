@@ -38,11 +38,33 @@ class RNN(nn.Module):
         # out.size() --> 100, 10
         return out
 
-    def test(self, data, loss, epoch):
+
+    def get_accuracy(inputs, targets):
+        """
+        Given the output of the nn and the target,
+        compute the accuracy which is the percent of correct predictions over all
+        :param inputs: torch.tensor, input
+        :param targets: torch.tensor, target
+        :return: accuracy: float, persentage of correct predictions
+        """
+        vect_inp = inputs.detach().numpy()
+        vect_tar = targets.detach().numpy()
+
+        total_pred = len(vect_inp)
+        correct_pred = 0
+
+        for inp, tar in zip(vect_inp, vect_tar):
+            if np.where(inp == np.max(inp)) == np.where(tar == 1.0):
+                correct_pred += 1
+
+        accuracy = correct_pred / total_pred
+        return accuracy
+    # Test function. Avoids calculation of gradients.
+    def test(self, test_in, test_out, loss):
         self.eval()
         with torch.no_grad():
-            inputs= torch.from_numpy(data.err_synd_test)
-            targets= torch.from_numpy(data.logical_err_test)
+            inputs= test_in
+            targets= test_out
             outputs= self(inputs)
-            test_val= loss(self.forward(outputs), targets)
+            cross_val= loss(self.forward(inputs), targets)
         return cross_val.item()

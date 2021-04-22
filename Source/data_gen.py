@@ -45,11 +45,11 @@ class Data():
         new_lg_test = np.zeros((N, 4), dtype=int)
         for i in range(N):
             new_lg_test[i] = (logic(lg_test[i,:]))
-        print(new_lg_test)
+        #print(new_lg_test)
 
 
         err_synd_test = data_test[:49, -8:]
-        logical_err_test = np.array(lg_test)
+        logical_err_test = np.array(new_lg_test)
         err_synd_test = np.array(err_synd_test, dtype=np.int)
         logical_err_test = np.array(logical_err_test, dtype=np.int)
         #print(logical_err_train, '\n')

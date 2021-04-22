@@ -37,3 +37,12 @@ class RNN(nn.Module):
         out = self.fc(out[:, -1, :])
         # out.size() --> 100, 10
         return out
+
+    def test(self, data, loss, epoch):
+        self.eval()
+        with torch.no_grad():
+            inputs= torch.from_numpy(data.err_synd_test)
+            targets= torch.from_numpy(data.logical_err_test)
+            outputs= self(inputs)
+            test_val= loss(self.forward(outputs), targets)
+        return cross_val.item()

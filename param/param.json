@@ -1,7 +1,7 @@
 {
   "learning_rate_d=3": 2e-4,
   "seq_len_d=3": 1,
-  "num_epochs_d=3": 20000,
+  "num_epochs_d=3": 1000,
 
   "learning_rate_d=5": 2e-4,
   "seq_len_d=5": 1,

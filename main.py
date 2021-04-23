@@ -27,7 +27,7 @@ if __name__ == "__main__":
                         help='verbosity (default: 1)')
     args = parser.parse_args()
 
-    
+
 #######################Data###############################################
     data_train = np.loadtxt('%s' %args.data_train)
     data_test = np.loadtxt('%s' %args.data_test)
@@ -58,6 +58,8 @@ if __name__ == "__main__":
         seq_len = param['seq_len_d=5']
         num_epochs = param['num_epochs_d=5']
 
+
+
 ######################################################################################################
     train_in = torch.from_numpy(error_synd_train.reshape(-1, seq_len, train_in_row).astype(np.float32))
     train_out = torch.from_numpy(logical_err_train.reshape(-1, seq_len, train_out_row).astype(np.float32))
@@ -69,48 +71,46 @@ if __name__ == "__main__":
     test_out = torch.reshape(test_out, (test_out_col, test_out_row))
     print('\n',test_in.shape, test_out.shape,'\n')
 
-    
-    
-    
-    
-    def demo():
-        #define data partitions
-        input_dim, hidden_dim, layer_dim, output_dim = train_in_row, train_in_col, layer_dim, train_out_row
-        #Genarating the Model
-        net = RNN(input_dim, hidden_dim, layer_dim, output_dim)
-        #Definint Optimizer and Loss function
-        #optimizer = optim.SGD(model.parameters(), lr=parameters['learning_rate'])
-        optimizer = torch.optim.Adam(net.parameters(), lr=lr)
-        loss = nn.MSELoss(reduction = 'mean')#Using mean squared error between targets and output
-        
-        loss_vals = []
-        obj_vals = []
-        train_accuracy = []
-        test_acc = []
-        
-        #Training Loop
-        for epoch in range(num_epochs):
-            train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)    
-            obj_vals.append(train_val)
-            #migh have to call accuray function
-            train_accuracy.append(train_acc)
-            #########model.test??
-            if final_test:
-                test_val, test_acc = model.test(x_test, y_test, loss)
-            else:
-                test_val, test_acc = model.test(x_validate, y_validate, loss)
+
+    #define data partitions
+    input_dim, hidden_dim, layer_dim, output_dim = train_in_row, train_in_col, layer_dim, train_out_row
+    #Genarating the Model
+    model = RNN(input_dim, hidden_dim, layer_dim, output_dim)
+    #Definint Optimizer and Loss function
+    #optimizer = optim.SGD(model.parameters(), lr=parameters['learning_rate'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    loss = nn.MSELoss(reduction = 'mean')#Using mean squared error between targets and output
+
+    cross_vals = []
+    obj_vals = []
+    train_accuracy = []
+    test_acc = []
+
+    #Training Loop
+    for epoch in range(num_epochs):
+        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
+        obj_vals.append(train_val)
+        #migh have to call accuray function
+        train_accuracy.append(train_acc)
+        #########model.test??
+        if epoch == num_epochs:
+            test_val, test_acc = model.test(test_in, test_out, loss)
+        #else:
+        #    test_val, test_acc = model.test(x_validate, y_validate, loss)
             cross_vals.append(test_val)
             test_accuracy.append(test_acc)
-            if args.v >=2:
-                if (epoch + 1)% int(0.1*num_epochs) == 0:
-                    print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+                        '\tTraining Loss: {:.4f}'.format(loss.item()+                        '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100)+                        '\tTest Accuracy: {:.2f}%'.format(test_acc * 100)))
+        if args.v >=2:
+            if (epoch + 1)% int(0.1*num_epochs) == 0:
+                print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
+                '\tTraining Loss: {:.4f}'.format(train_val)+\
+                '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100))
 
 
-        if args.v:
-            print('Final training loss: {:.4f}'.format(object_vals[-1]))
-            print('Final test loss: {:.4f}'.format(cross_vals[-1]))
-            print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
-            print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))   
+    if args.v:
+        print('Final training loss: {:.4f}'.format(object_vals[-1]))
+        print('Final test loss: {:.4f}'.format(cross_vals[-1]))
+        print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
+        print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))
 
 
 
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 #     obj_vals = []
 #     train_accuracy = []
 #     test_accuracy = []
-    
+
 #     for epoch in range(num_epochs):
 
 #         # Clear gradients w.r.t. parameters
@@ -132,18 +132,18 @@ if __name__ == "__main__":
 #         outputs = net(train_in) ####outputs not forwarded not forwarded
 
 #         # Calculate Loss: softmax --> cross entropy loss
-#         loss = criterion(outputs, train_out) 
+#         loss = criterion(outputs, train_out)
 
 #         # Getting gradients w.r.t. parameters
 #         #loss.backward() ####applied to obj vals
 
 #         # Updating parameters
 #         ##should pass in loss
-        
+
 #         #optimizer.step()
 #         #Difference
 #         #obj_vals.append(loss.item()) #########main dif
-        
+
 #         #test_val= net.test(test_in, test_out, loss)
 #         #cross_vals.append(test_val)
 
@@ -162,4 +162,3 @@ if __name__ == "__main__":
 #         print('Final test loss: {:.4f}'.format(cross_vals[-1]))
 #         print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
 #         print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))
-

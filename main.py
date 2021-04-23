@@ -9,6 +9,7 @@ from torch.autograd import Variable
 sys.path.append('Source')
 from nn_gen import RNN
 from data_gen import Data
+from tqdm import tqdm
 
 def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
     cross_vals = []
@@ -17,23 +18,32 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
     test_accuracy = []
 
     #Training Loop
-    for epoch in range(num_epochs):
-        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
+    correct_pred = 0
+    for epoch in range(1, num_epochs+1):
+        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer, correct_pred)
         obj_vals.append(train_val)
-        #migh have to call accuray function
+        #migh have to call accuracy function
         train_accuracy.append(train_acc)
         #########model.test??
+<<<<<<< HEAD
     if epoch == num_epochs:
         test_val, test_acc = model.test(test_in, test_out, loss)
     #else:
        #test_val, test_acc = model.test(x_validate, y_validate, loss)
+=======
+        test_val, test_acc = model.test(test_in, test_out, loss, correct_pred)
+        print(test_acc)
+        #else:
+        #    test_val, test_acc = model.test(x_validate, y_validate, loss)
+>>>>>>> b76b940359e385ac1704b22629283ecbc2afbf55
         cross_vals.append(test_val)
         test_accuracy.append(test_acc)
         if verbosity >=2:
             if (epoch + 1)% int(0.1*num_epochs) == 0:
                 print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
                 '\tTraining Loss: {:.4f}'.format(train_val)+\
-                '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100))
+                '\tTraining Accuracy: {:.2f}%'.format(train_acc))
+
 
     return obj_vals, cross_vals, train_accuracy, test_accuracy
 
@@ -109,12 +119,12 @@ if __name__ == "__main__":
     loss = nn.MSELoss(reduction = 'mean')#Using mean squared error between targets and output
 
     obj_vals, cross_vals, train_accuracy, test_accuracy = demo(num_epochs, train_in, test_in, loss, optimizer, args.v)
-    print(obj_vals, cross_vals, train_accuracy, test_accuracy)
+
     if args.v:
         print('Final training loss: {:.4f}'.format(obj_vals[-1]))
         print('Final test loss: {:.4f}'.format(cross_vals[-1]))
-        print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
-        print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))
+        print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1]))
+        print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1]))
 
 
 

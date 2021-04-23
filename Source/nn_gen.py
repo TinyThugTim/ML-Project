@@ -39,20 +39,19 @@ class RNN(nn.Module):
         self.fc1.reset_parameters()
         self.fc2.reset_parameters()
 
-    def backprop(self, train_in, train_out, loss, optimizer):
+    def backprop(self, train_in, train_out, loss, optimizer, count):
         self.train()
         inputs = train_in
         targets = train_out
         outputs = self.forward(inputs)
-
-        acc = self.get_accuracy(outputs, targets)
+        acc = self.get_accuracy(inputs, targets, count)
         obj_val = loss(outputs, targets)
         optimizer.zero_grad()
         obj_val.backward()
         optimizer.step()
         return obj_val.item(), acc
 
-    def get_accuracy(self, inputs, targets):
+    def get_accuracy(self, data_in, data_out, count):
         """
         Given the output of the nn and the target,
         compute the accuracy which is the percent of correct predictions over all
@@ -60,25 +59,25 @@ class RNN(nn.Module):
         :param targets: torch.tensor, target
         :return: accuracy: float, persentage of correct predictions
         """
+        inputs = self.forward(data_in)
+        targets = data_out
         vect_inp = inputs.detach().numpy()
         vect_tar = targets.detach().numpy()
-
         total_pred = len(vect_inp)
-        correct_pred = 0
-
         for inp, tar in zip(vect_inp, vect_tar):
-            if np.where(inp == np.max(inp)) == np.where(tar == 1.0):
-                correct_pred += 1
+            if np.where(inp == np.max(inp)) == np.where(tar == 1.):
+                count += 1
 
-        accuracy = correct_pred / total_pred
+        accuracy = count / total_pred * 100
         return accuracy
 
-    def test(self, x_test, y_test, loss):
+
+    def test(self, x_test, y_test, loss, count):
         self.eval()
         with torch.no_grad():
-            inputs= torch.from_numpy(x_test)
-            targets= torch.from_numpy(y_test)
+            inputs= x_test
+            targets= y_test
             outputs= self.forward(inputs)
-            acc = get_accuracy(outputs, targets)
+            acc = self.get_accuracy(inputs, targets, count)
             cross_val = loss(outputs, targets)
         return cross_val.item(), acc

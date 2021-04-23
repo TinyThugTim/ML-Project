@@ -18,21 +18,20 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
     test_accuracy = []
 
     #Training Loop
-    correct_pred = 0
     for epoch in range(1, num_epochs+1):
-        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer, correct_pred)
+        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
         obj_vals.append(train_val)
         #migh have to call accuracy function
         train_accuracy.append(train_acc)
         #########model.test??
-        test_val, test_acc = model.test(test_in, test_out, loss, correct_pred)
+        test_val, test_acc = model.test(test_in, test_out, loss)
         print(test_acc)
         #else:
         #    test_val, test_acc = model.test(x_validate, y_validate, loss)
         cross_vals.append(test_val)
         test_accuracy.append(test_acc)
         if verbosity >=2:
-            if (epoch + 1)% int(0.1*num_epochs) == 0:
+            if not ((epoch + 1) % num_epochs):
                 print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
                 '\tTraining Loss: {:.4f}'.format(train_val)+\
                 '\tTraining Accuracy: {:.2f}%'.format(train_acc))

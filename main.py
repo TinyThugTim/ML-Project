@@ -106,11 +106,11 @@ if __name__ == "__main__":
                 '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100))
 
 
-    if args.v:
-        print('Final training loss: {:.4f}'.format(object_vals[-1]))
-        print('Final test loss: {:.4f}'.format(cross_vals[-1]))
-        print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
-        print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))
+        if args.v:
+            print('Final training loss: {:.4f}'.format(object_vals[-1]))
+            print('Final test loss: {:.4f}'.format(cross_vals[-1]))
+            print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
+            print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))
 
 
 

@@ -18,7 +18,7 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
     test_accuracy = []
 
     #Training Loop
-<<<<<<< HEAD
+
     for epoch in range(num_epochs+1):
         train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
         obj_vals.append(train_val)
@@ -36,28 +36,7 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
                 print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
                 '\tTraining Loss: {:.4f}'.format(train_val)+\
                 '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100))
-=======
-    with tqdm(total=num_epochs, dynamic_ncols=True, position=0, leave=True) as pbar:
-	    for epoch in range(num_epochs):
-	        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
-	        obj_vals.append(train_val)
-	        #migh have to call accuray function
-	        train_accuracy.append(train_acc)
-	        #########model.test??
-	        if epoch == num_epochs:
-	            test_val, test_acc = model.test(test_in, test_out, loss)
-	        #else:
-	        #    test_val, test_acc = model.test(x_validate, y_validate, loss)
-	            cross_vals.append(test_val)
-	            test_accuracy.append(test_acc)
 
-	        pbar.update()
-	        if verbosity >=2:
-	            if (epoch + 1)% int(0.1*num_epochs) == 0:
-	                print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
-	                '\tTraining Loss: {:.4f}'.format(train_val)+\
-	                '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100))
->>>>>>> e54e7703849103daa14cbe32cf1de7054754414d
 
     return obj_vals, cross_vals, train_accuracy, test_accuracy
 
@@ -133,10 +112,6 @@ if __name__ == "__main__":
     loss = nn.MSELoss(reduction = 'mean')#Using mean squared error between targets and output
 
     obj_vals, cross_vals, train_accuracy, test_accuracy = demo(num_epochs, train_in, test_in, loss, optimizer, args.v)
-    print(np.array(obj_vals))
-    print(np.array(cross_vals))
-    print(np.array(train_accuracy))
-    print(np.array(test_accuracy))
 
     if args.v:
         print('Final training loss: {:.4f}'.format(obj_vals[-1]))

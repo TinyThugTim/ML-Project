@@ -76,9 +76,9 @@ class RNN(nn.Module):
     def test(self, x_test, y_test, loss):
         self.eval()
         with torch.no_grad():
-            inputs= torch.from_numpy(x_test)
-            targets= torch.from_numpy(y_test)
+            inputs= x_test
+            targets= y_test
             outputs= self.forward(inputs)
-            acc = get_accuracy(outputs, targets)
+            acc = self.get_accuracy(outputs, targets)
             cross_val = loss(outputs, targets)
         return cross_val.item(), acc

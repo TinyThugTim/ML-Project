@@ -17,10 +17,10 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
     test_accuracy = []
 
     #Training Loop
-    for epoch in range(num_epochs):
+    for epoch in range(num_epochs+1):
         train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
         obj_vals.append(train_val)
-        #migh have to call accuray function
+        #migh have to call accuracy function
         train_accuracy.append(train_acc)
         #########model.test??
         if epoch == num_epochs:

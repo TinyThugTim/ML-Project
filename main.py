@@ -24,10 +24,21 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
         #migh have to call accuracy function
         train_accuracy.append(train_acc)
         #########model.test??
+<<<<<<< HEAD
+
+    if epoch == num_epochs:
         test_val, test_acc = model.test(test_in, test_out, loss)
+    #else:
+       #test_val, test_acc = model.test(x_validate, y_validate, loss)
+
+        test_val, test_acc = model.test(test_in, test_out, loss, correct_pred)
+=======
+        test_val, test_acc = model.test(test_in, test_out, loss)
+>>>>>>> 976b022cc3fb5b4f957ee0bde92b2c73556b232d
         print(test_acc)
         #else:
         #    test_val, test_acc = model.test(x_validate, y_validate, loss)
+
         cross_vals.append(test_val)
         test_accuracy.append(test_acc)
         if verbosity >=2:

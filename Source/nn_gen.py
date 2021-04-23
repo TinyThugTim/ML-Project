@@ -41,11 +41,9 @@ class RNN(nn.Module):
 
     def backprop(self, train_in, train_out, loss, optimizer):
         self.train()
-        inputs = train_in
-        targets = train_out
-        outputs = self.forward(inputs)
-        acc = self.get_accuracy(outputs, targets)
-        obj_val = loss(outputs, targets)
+        acc = self.get_accuracy(train_in, train_out)
+        obj_val = loss(self.forward(train_in), train_out)
+
         optimizer.zero_grad()
         obj_val.backward()
         optimizer.step()
@@ -60,14 +58,14 @@ class RNN(nn.Module):
         :return: accuracy: float, persentage of correct predictions
         """
         correct_pred = 0
-        inputs = data_in
-        targets = data_out
-        vect_inp = inputs.detach().numpy()
-        vect_tar = targets.detach().numpy()
-        total_pred = len(vect_inp)
-        for inp, tar in zip(vect_inp, vect_tar):
-            if np.where(inp == np.max(inp)) == np.where(tar == 1.):
-                correct_pred += 1
+        with torch.no_grad():
+            vect_inp = self.forward(data_in).detach().numpy()
+            vect_tar = data_out.detach().numpy()
+
+            total_pred = len(vect_inp)
+            for inp, tar in zip(vect_inp, vect_tar):
+                if np.where(inp == np.max(inp)) == np.where(tar == 1.):
+                    correct_pred += 1
 
         accuracy = correct_pred / total_pred * 100
         return accuracy
@@ -75,10 +73,9 @@ class RNN(nn.Module):
 
     def test(self, x_test, y_test, loss):
         self.eval()
+
         with torch.no_grad():
-            inputs= x_test
-            targets= y_test
-            outputs= self.forward(inputs)
-            acc = self.get_accuracy(outputs, targets)
-            cross_val = loss(outputs, targets)
+            cross_val = loss(self.forward(x_test), y_test)
+            acc = self.get_accuracy(x_test, y_test)
+
         return cross_val.item(), acc

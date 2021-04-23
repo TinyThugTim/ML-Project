@@ -10,6 +10,33 @@ sys.path.append('Source')
 from nn_gen import RNN
 from data_gen import Data
 
+def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
+    cross_vals = []
+    obj_vals = []
+    train_accuracy = []
+    test_accuracy = []
+
+    #Training Loop
+    for epoch in range(num_epochs):
+        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
+        obj_vals.append(train_val)
+        #migh have to call accuray function
+        train_accuracy.append(train_acc)
+        #########model.test??
+        if epoch == num_epochs:
+            test_val, test_acc = model.test(test_in, test_out, loss)
+        #else:
+        #    test_val, test_acc = model.test(x_validate, y_validate, loss)
+            cross_vals.append(test_val)
+            test_accuracy.append(test_acc)
+        if verbosity >=2:
+            if (epoch + 1)% int(0.1*num_epochs) == 0:
+                print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
+                '\tTraining Loss: {:.4f}'.format(train_val)+\
+                '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100))
+
+    return obj_vals, cross_vals, train_accuracy, test_accuracy
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='ML Project Arguments')
     """
@@ -81,36 +108,13 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss = nn.MSELoss(reduction = 'mean')#Using mean squared error between targets and output
 
-    cross_vals = []
-    obj_vals = []
-    train_accuracy = []
-    test_acc = []
-
-    #Training Loop
-    for epoch in range(num_epochs):
-        train_val, train_acc = model.backprop(train_in, train_out, loss, optimizer)
-        obj_vals.append(train_val)
-        #migh have to call accuray function
-        train_accuracy.append(train_acc)
-        #########model.test??
-        if epoch == num_epochs:
-            test_val, test_acc = model.test(test_in, test_out, loss)
-        #else:
-        #    test_val, test_acc = model.test(x_validate, y_validate, loss)
-            cross_vals.append(test_val)
-            test_accuracy.append(test_acc)
-        if args.v >=2:
-            if (epoch + 1)% int(0.1*num_epochs) == 0:
-                print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
-                '\tTraining Loss: {:.4f}'.format(train_val)+\
-                '\tTraining Accuracy: {:.2f}%'.format(train_acc * 100))
-
-
-        if args.v:
-            print('Final training loss: {:.4f}'.format(object_vals[-1]))
-            print('Final test loss: {:.4f}'.format(cross_vals[-1]))
-            print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
-            print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))
+    obj_vals, cross_vals, train_accuracy, test_accuracy = demo(num_epochs, train_in, test_in, loss, optimizer, args.v)
+    print(obj_vals, cross_vals, train_accuracy, test_accuracy)
+    if args.v:
+        print('Final training loss: {:.4f}'.format(obj_vals[-1]))
+        print('Final test loss: {:.4f}'.format(cross_vals[-1]))
+        print('Final train accuracy: {:.2f}%'.format(train_accuracy[-1] * 100))
+        print('Final test accuracy: {:.2f}%'.format(test_accuracy[-1] * 100))
 
 
 

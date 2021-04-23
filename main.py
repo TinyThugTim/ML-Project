@@ -31,7 +31,7 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
         cross_vals.append(test_val)
         test_accuracy.append(test_acc)
         if verbosity >=2:
-            if not ((epoch + 1) % num_epochs):
+            if (epoch + 1)% int(0.1*num_epochs) == 0:
                 print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
                 '\tTraining Loss: {:.4f}'.format(train_val)+\
                 '\tTraining Accuracy: {:.2f}%'.format(train_acc))
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     input_dim, hidden_dim, layer_dim, output_dim = train_in_row, train_in_col, layer_dim, train_out_row
     #Genarating the Model
     model = RNN(input_dim, hidden_dim, layer_dim, output_dim)
-    #Definint Optimizer and Loss function
+    #Defining Optimizer and Loss function
     #optimizer = optim.SGD(model.parameters(), lr=parameters['learning_rate'])
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss = nn.MSELoss(reduction = 'mean')#Using mean squared error between targets and output

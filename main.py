@@ -23,12 +23,12 @@ def demo(num_epochs, train_in, test_in, loss, optimizer, verbosity):
         #migh have to call accuray function
         train_accuracy.append(train_acc)
         #########model.test??
-        if epoch == num_epochs:
-            test_val, test_acc = model.test(test_in, test_out, loss)
-        #else:
-        #    test_val, test_acc = model.test(x_validate, y_validate, loss)
-            cross_vals.append(test_val)
-            test_accuracy.append(test_acc)
+    if epoch == num_epochs:
+        test_val, test_acc = model.test(test_in, test_out, loss)
+    #else:
+       #test_val, test_acc = model.test(x_validate, y_validate, loss)
+        cross_vals.append(test_val)
+        test_accuracy.append(test_acc)
         if verbosity >=2:
             if (epoch + 1)% int(0.1*num_epochs) == 0:
                 print('Epoch [{}/{}]'.format(epoch+1, num_epochs)+\
